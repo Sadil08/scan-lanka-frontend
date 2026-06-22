@@ -20,6 +20,7 @@ import {
   uploadBankSlip,
 } from '@/lib/checkout';
 import { savePendingOrder } from '@/lib/orders';
+import { fetchPaymentMethods, PaymentMethods } from '@/lib/payments';
 
 type PaymentMethod = 'CARD' | 'BANK';
 
@@ -66,9 +67,24 @@ export default function CheckoutPage() {
     province: '',
     postalCode: '',
   });
+  const [methods, setMethods] = useState<PaymentMethods | null>(null);
 
   const isDelivery = fulfilment === 'DELIVERY';
   const canUseSaved = user?.role === 'CUSTOMER' && user.emailVerified;
+
+  useEffect(() => {
+    fetchPaymentMethods()
+      .then((m) => {
+        setMethods(m);
+        if (m.payhere) setMethod('CARD');
+        else if (m.bankTransfer) setMethod('BANK');
+      })
+      .catch(() => setMethods({ payhere: true, bankTransfer: true, deliveryCod: true }));
+  }, []);
+
+  useEffect(() => {
+    if (methods && !methods.deliveryCod && payment === 'COD') setPayment('PREPAID');
+  }, [methods, payment]);
 
   useEffect(() => {
     if (!isDelivery) return;
@@ -337,21 +353,30 @@ export default function CheckoutPage() {
             <input type="radio" checked={payment === 'PREPAID'} onChange={() => setPayment('PREPAID')} /> Pay
             delivery now
           </label>
-          <label style={{ display: 'block' }}>
-            <input type="radio" checked={payment === 'COD'} onChange={() => setPayment('COD')} /> Pay delivery on
-            delivery (cash)
-          </label>
+          {(methods?.deliveryCod ?? true) && (
+            <label style={{ display: 'block' }}>
+              <input type="radio" checked={payment === 'COD'} onChange={() => setPayment('COD')} /> Pay delivery on
+              delivery (cash)
+            </label>
+          )}
         </section>
 
         <section style={card}>
           <h3>Payment method</h3>
-          <label style={{ display: 'block' }}>
-            <input type="radio" checked={method === 'CARD'} onChange={() => setMethod('CARD')} /> Card (PayHere)
-          </label>
-          <label style={{ display: 'block' }}>
-            <input type="radio" checked={method === 'BANK'} onChange={() => setMethod('BANK')} /> Bank transfer
-            (upload slip)
-          </label>
+          {(methods?.payhere ?? true) && (
+            <label style={{ display: 'block' }}>
+              <input type="radio" checked={method === 'CARD'} onChange={() => setMethod('CARD')} /> Card (PayHere)
+            </label>
+          )}
+          {(methods?.bankTransfer ?? true) && (
+            <label style={{ display: 'block' }}>
+              <input type="radio" checked={method === 'BANK'} onChange={() => setMethod('BANK')} /> Bank transfer
+              (upload slip)
+            </label>
+          )}
+          {methods && !methods.payhere && !methods.bankTransfer && (
+            <p style={{ color: 'var(--danger)' }}>No online payment methods are available right now.</p>
+          )}
         </section>
 
         <section style={card}>
@@ -373,7 +398,11 @@ export default function CheckoutPage() {
         </section>
 
         {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
-        <button type="submit" disabled={busy || notServiceable} style={{ ...button, opacity: busy || notServiceable ? 0.5 : 1 }}>
+        <button
+          type="submit"
+          disabled={busy || notServiceable || (methods != null && !methods.payhere && !methods.bankTransfer)}
+          style={{ ...button, opacity: busy || notServiceable ? 0.5 : 1 }}
+        >
           {busy ? 'Placing order…' : 'Place order'}
         </button>
       </form>
