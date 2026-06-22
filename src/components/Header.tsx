@@ -25,6 +25,9 @@ export function Header() {
         <Link href="/wishlist" style={link}>
           Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ''}
         </Link>
+        <Link href="/delivery" style={link}>
+          Delivery
+        </Link>
         {user ? (
           <>
             <Link href="/account" style={link}>

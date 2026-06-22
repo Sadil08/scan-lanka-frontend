@@ -3,7 +3,10 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/components/CartProvider';
+import { useAuth } from '@/components/AuthProvider';
 import { GuestCartItem } from '@/lib/cart';
+import { listAddresses, SavedAddress } from '@/lib/addresses';
+import { fetchPostalCodes, PostalCode } from '@/lib/delivery';
 import { formatLkr } from '@/lib/money';
 import {
   DeliveryPayment,
@@ -22,6 +25,7 @@ type PaymentMethod = 'CARD' | 'BANK';
 
 export default function CheckoutPage() {
   const { lines, clear } = useCart();
+  const { user } = useAuth();
   const items: GuestCartItem[] = useMemo(
     () =>
       lines.map((l) => ({
@@ -51,8 +55,48 @@ export default function CheckoutPage() {
   const [placed, setPlaced] = useState<PlacedResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [postalCodes, setPostalCodes] = useState<PostalCode[]>([]);
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+  const [showBilling, setShowBilling] = useState(false);
+  const [billing, setBilling] = useState({
+    name: '',
+    taxId: '',
+    street: '',
+    city: '',
+    province: '',
+    postalCode: '',
+  });
 
   const isDelivery = fulfilment === 'DELIVERY';
+  const canUseSaved = user?.role === 'CUSTOMER' && user.emailVerified;
+
+  useEffect(() => {
+    if (!isDelivery) return;
+    fetchPostalCodes().then(setPostalCodes).catch(() => setPostalCodes([]));
+  }, [isDelivery]);
+
+  useEffect(() => {
+    if (!canUseSaved) return;
+    listAddresses()
+      .then((addrs) => {
+        setSavedAddresses(addrs);
+        const d = addrs.find((a) => a.isDefault) ?? addrs[0];
+        if (d) applyAddress(d);
+      })
+      .catch(() => setSavedAddresses([]));
+  }, [canUseSaved]);
+
+  function applyAddress(a: SavedAddress) {
+    setForm((f) => ({
+      ...f,
+      street: a.street,
+      city: a.city,
+      province: a.province,
+      postalCode: a.postalCode,
+      contactPhone: a.phone,
+      contactEmail: a.email,
+    }));
+  }
 
   useEffect(() => {
     if (items.length === 0 || placed) return;
@@ -80,6 +124,16 @@ export default function CheckoutPage() {
         deliveryPayment: payment,
         ship: isDelivery
           ? { street: form.street, city: form.city, province: form.province, postalCode: form.postalCode }
+          : null,
+        billing: showBilling
+          ? {
+              name: billing.name || undefined,
+              taxId: billing.taxId || undefined,
+              street: billing.street || undefined,
+              city: billing.city || undefined,
+              province: billing.province || undefined,
+              postalCode: billing.postalCode || undefined,
+            }
           : null,
         contactName: form.contactName,
         contactPhone: form.contactPhone,
@@ -159,6 +213,9 @@ export default function CheckoutPage() {
           </p>
         )}
 
+        <Link href={`/orders/lookup`} style={{ color: 'var(--primary)', marginRight: '1rem' }}>
+          Track this order
+        </Link>
         <Link href="/products" style={{ color: 'var(--primary)' }}>
           Continue shopping
         </Link>
@@ -203,19 +260,73 @@ export default function CheckoutPage() {
           </select>
           {isDelivery && (
             <>
+              {canUseSaved && savedAddresses.length > 0 && (
+                <select
+                  style={input}
+                  defaultValue=""
+                  onChange={(e) => {
+                    const id = Number(e.target.value);
+                    const a = savedAddresses.find((x) => x.id === id);
+                    if (a) applyAddress(a);
+                  }}
+                >
+                  <option value="" disabled>
+                    Use a saved address…
+                  </option>
+                  {savedAddresses.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.label ?? a.street} — {a.postalCode}
+                    </option>
+                  ))}
+                </select>
+              )}
               <input style={input} placeholder="Street address" value={form.street}
                 onChange={(e) => set('street', e.target.value)} required />
               <input style={input} placeholder="City" value={form.city}
                 onChange={(e) => set('city', e.target.value)} required />
               <input style={input} placeholder="Province" value={form.province}
                 onChange={(e) => set('province', e.target.value)} required />
-              <input style={input} placeholder="Postal code" value={form.postalCode}
-                onChange={(e) => set('postalCode', e.target.value)} required />
+              <input
+                style={input}
+                placeholder="Postal code"
+                list="postal-codes"
+                value={form.postalCode}
+                onChange={(e) => set('postalCode', e.target.value)}
+                required
+              />
+              <datalist id="postal-codes">
+                {postalCodes.map((p) => (
+                  <option key={p.postalCode} value={p.postalCode}>
+                    {p.zoneName}
+                  </option>
+                ))}
+              </datalist>
               {notServiceable && (
                 <p style={{ color: 'var(--danger)' }}>
-                  Sorry, we don&apos;t deliver to that postal code. Please choose pickup or contact us.
+                  Sorry, we don&apos;t deliver to that postal code.{' '}
+                  <Link href="/delivery">See delivery areas</Link> or choose pickup.
                 </p>
               )}
+            </>
+          )}
+        </section>
+
+        <section style={card}>
+          <h3>Billing (optional)</h3>
+          <label style={{ display: 'block' }}>
+            <input type="checkbox" checked={showBilling} onChange={(e) => setShowBilling(e.target.checked)} />
+            {' '}Add business / invoice details
+          </label>
+          {showBilling && (
+            <>
+              <input style={input} placeholder="Business name" value={billing.name}
+                onChange={(e) => setBilling((b) => ({ ...b, name: e.target.value }))} />
+              <input style={input} placeholder="Tax ID" value={billing.taxId}
+                onChange={(e) => setBilling((b) => ({ ...b, taxId: e.target.value }))} />
+              <input style={input} placeholder="Billing street" value={billing.street}
+                onChange={(e) => setBilling((b) => ({ ...b, street: e.target.value }))} />
+              <input style={input} placeholder="Billing city" value={billing.city}
+                onChange={(e) => setBilling((b) => ({ ...b, city: e.target.value }))} />
             </>
           )}
         </section>

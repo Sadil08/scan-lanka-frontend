@@ -6,11 +6,62 @@ export interface OrderStatusView {
   totalCents: number;
 }
 
+export interface OrderSummary {
+  orderNumber: string;
+  status: string;
+  totalCents: number;
+  createdAt: string;
+}
+
+export interface OrderLine {
+  name: string;
+  sku: string;
+  quantity: number;
+  unitPriceCents: number;
+  lineTotalCents: number;
+}
+
+export interface StatusEvent {
+  fromStatus: string | null;
+  toStatus: string;
+  at: string;
+}
+
+export interface OrderDetail {
+  orderNumber: string;
+  status: string;
+  subtotalCents: number;
+  deliveryCents: number;
+  taxCents: number;
+  totalCents: number;
+  deliveryCodCents: number;
+  fulfilmentType: string;
+  deliveryPayment: string;
+  carrier: string | null;
+  trackingRef: string | null;
+  shipStreet: string | null;
+  shipCity: string | null;
+  shipProvince: string | null;
+  shipPostalCode: string | null;
+  lines: OrderLine[];
+  timeline: StatusEvent[];
+}
+
 export const lookupOrder = (orderNumber: string, email: string) =>
   api<OrderStatusView>('/api/orders/lookup', {
     method: 'POST',
     body: JSON.stringify({ orderNumber, email }),
   });
+
+export const lookupOrderDetail = (orderNumber: string, email: string) =>
+  api<OrderDetail>('/api/orders/lookup/detail', {
+    method: 'POST',
+    body: JSON.stringify({ orderNumber, email }),
+  });
+
+export const listMyOrders = () => api<OrderSummary[]>('/api/orders');
+
+export const getMyOrder = (orderNumber: string) => api<OrderDetail>(`/api/orders/${encodeURIComponent(orderNumber)}`);
 
 const PENDING_KEY = 'sl_pending_order';
 

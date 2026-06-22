@@ -101,11 +101,21 @@ export function submitToPayHere(result: InitiateResult, customer: PayHereCustome
   form.submit();
 }
 
+export interface Billing {
+  name?: string;
+  taxId?: string;
+  street?: string;
+  city?: string;
+  province?: string;
+  postalCode?: string;
+}
+
 export const placeOrder = (body: {
   items: GuestCartItem[];
   fulfilmentType: FulfilmentType;
   deliveryPayment: DeliveryPayment;
   ship: Address | null;
+  billing?: Billing | null;
   contactName: string;
   contactPhone: string;
   contactEmail: string;

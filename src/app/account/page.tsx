@@ -1,50 +1,20 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import Link from 'next/link';
 import { AuthGuard } from '@/components/AuthGuard';
 import { useAuth } from '@/components/AuthProvider';
 import { authApi } from '@/lib/auth';
-import { lookupOrder } from '@/lib/orders';
-import { formatLkr } from '@/lib/money';
-import { ApiError } from '@/lib/api';
-import {
-  dangerText,
-  fieldInput,
-  formStack,
-  mutedText,
-  pageWrap,
-  primaryButton,
-  textLink,
-} from '@/components/formStyles';
+import { SavedAddresses } from '@/components/SavedAddresses';
+import { mutedText, pageWrap, primaryButton, textLink } from '@/components/formStyles';
 
 function AccountContent() {
   const { user, logout } = useAuth();
-  const [orderNumber, setOrderNumber] = useState('');
-  const [orderEmail, setOrderEmail] = useState(user?.email ?? '');
-  const [orderStatus, setOrderStatus] = useState<string | null>(null);
-  const [orderError, setOrderError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
 
   if (!user) return null;
 
   async function logoutEverywhere() {
     await authApi.logoutAll();
     await logout();
-  }
-
-  async function lookup(e: FormEvent) {
-    e.preventDefault();
-    setOrderError(null);
-    setOrderStatus(null);
-    setBusy(true);
-    try {
-      const o = await lookupOrder(orderNumber, orderEmail);
-      setOrderStatus(`${o.orderNumber}: ${o.status} — ${formatLkr(o.totalCents)}`);
-    } catch (err) {
-      setOrderError(err instanceof ApiError ? 'Order not found.' : 'Lookup failed.');
-    } finally {
-      setBusy(false);
-    }
   }
 
   return (
@@ -98,36 +68,19 @@ function AccountContent() {
       </section>
 
       <section style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.1rem' }}>Track an order</h2>
-        <p style={mutedText}>Look up a guest order with your order number and email.</p>
-        <form onSubmit={lookup} style={formStack}>
-          <input
-            style={fieldInput}
-            placeholder="Order number"
-            value={orderNumber}
-            onChange={(e) => setOrderNumber(e.target.value)}
-            required
-          />
-          <input
-            style={fieldInput}
-            type="email"
-            placeholder="Email used at checkout"
-            value={orderEmail}
-            onChange={(e) => setOrderEmail(e.target.value)}
-            required
-          />
-          {orderStatus && <p style={{ color: 'var(--accent)' }}>{orderStatus}</p>}
-          {orderError && <p style={dangerText}>{orderError}</p>}
-          <button style={primaryButton} type="submit" disabled={busy}>
-            {busy ? 'Looking up…' : 'Look up order'}
-          </button>
-        </form>
+        <h2 style={{ fontSize: '1.1rem' }}>Orders</h2>
+        <p style={mutedText}>
+          <Link href="/account/orders" style={textLink}>
+            View order history
+          </Link>
+          {' · '}
+          <Link href="/orders/lookup" style={textLink}>
+            Track a guest order
+          </Link>
+        </p>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: '1.1rem' }}>Saved addresses</h2>
-        <p style={mutedText}>Address management will appear here once checkout addresses are wired.</p>
-      </section>
+      {user.emailVerified && <SavedAddresses />}
     </main>
   );
 }
