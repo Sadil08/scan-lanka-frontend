@@ -1,9 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { AuthGuard } from '@/components/AuthGuard';
-import { useAuth } from '@/components/AuthProvider';
 import {
   AdminNotification,
   listAdminNotifications,
@@ -11,19 +8,17 @@ import {
 } from '@/lib/admin-notifications';
 import { mutedText, pageWrap } from '@/components/formStyles';
 
-function AdminNotificationsView() {
-  const { user } = useAuth();
+export default function AdminNotificationsPage() {
   const [rows, setRows] = useState<AdminNotification[]>([]);
   const [status, setStatus] = useState('all');
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
 
   useEffect(() => {
-    if (user?.role !== 'ADMIN') return;
     listAdminNotifications(status)
       .then((p) => setRows(p.content))
       .catch(() => setError('Could not load notifications.'));
-  }, [user, status]);
+  }, [status]);
 
   async function onResend(id: number) {
     setBusyId(id);
@@ -37,15 +32,6 @@ function AdminNotificationsView() {
     } finally {
       setBusyId(null);
     }
-  }
-
-  if (user?.role !== 'ADMIN') {
-    return (
-      <main style={pageWrap}>
-        <p style={mutedText}>Admin access required.</p>
-        <Link href="/">Home</Link>
-      </main>
-    );
   }
 
   return (
@@ -100,13 +86,5 @@ function AdminNotificationsView() {
       </table>
       {rows.length === 0 && <p style={mutedText}>No notifications yet.</p>}
     </main>
-  );
-}
-
-export default function AdminNotificationsPage() {
-  return (
-    <AuthGuard>
-      <AdminNotificationsView />
-    </AuthGuard>
   );
 }
