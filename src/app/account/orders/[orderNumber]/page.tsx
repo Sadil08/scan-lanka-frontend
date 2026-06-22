@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { AuthGuard } from '@/components/AuthGuard';
 import { getMyOrder, OrderDetail } from '@/lib/orders';
 import { formatLkr } from '@/lib/money';
+import { downloadMyReceiptPdf, saveBlob } from '@/lib/admin-notifications';
 import { mutedText, pageWrap } from '@/components/formStyles';
 
 function OrderDetailView() {
@@ -13,6 +14,7 @@ function OrderDetailView() {
   const orderNumber = decodeURIComponent(String(params.orderNumber));
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [error, setError] = useState(false);
+  const [receiptBusy, setReceiptBusy] = useState(false);
 
   useEffect(() => {
     getMyOrder(orderNumber)
@@ -46,6 +48,25 @@ function OrderDetailView() {
       <p style={mutedText}>
         Status: <strong>{order.status}</strong> · {order.fulfilmentType.replace('_', ' ')}
       </p>
+      {['PAID', 'CONFIRMED', 'PACKED', 'SHIPPED', 'READY_FOR_PICKUP', 'COMPLETED'].includes(order.status) && (
+        <p>
+          <button
+            type="button"
+            disabled={receiptBusy}
+            onClick={async () => {
+              setReceiptBusy(true);
+              try {
+                const blob = await downloadMyReceiptPdf(order.orderNumber);
+                saveBlob(blob, `SL-${order.orderNumber}-receipt.pdf`);
+              } finally {
+                setReceiptBusy(false);
+              }
+            }}
+          >
+            {receiptBusy ? 'Preparing PDF…' : 'Download receipt PDF'}
+          </button>
+        </p>
+      )}
       {order.trackingRef && (
         <p>
           Tracking ({order.carrier ?? 'carrier'}): <strong>{order.trackingRef}</strong>
