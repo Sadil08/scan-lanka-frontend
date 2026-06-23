@@ -1,26 +1,14 @@
-import Link from 'next/link';
+import { fetchHome } from '@/lib/home';
+import { HomePageView } from '@/components/HomePageView';
 
-export default function Home() {
-  return (
-    <main style={{ maxWidth: 960, margin: '0 auto', padding: '4rem 1.5rem', textAlign: 'center' }}>
-      <h1 style={{ color: 'var(--primary)' }}>Scan Lanka</h1>
-      <p style={{ color: 'var(--muted)', fontSize: '1.1rem' }}>
-        Boards &amp; teaching equipment — since 1998.
-      </p>
-      <Link
-        href="/products"
-        style={{
-          display: 'inline-block',
-          marginTop: '1.5rem',
-          padding: '0.7rem 1.6rem',
-          background: 'var(--primary)',
-          color: 'var(--primary-contrast)',
-          borderRadius: 'var(--radius)',
-          textDecoration: 'none',
-        }}
-      >
-        Browse products
-      </Link>
-    </main>
-  );
+export const revalidate = 120;
+
+export const metadata = {
+  title: 'Scan Lanka — Boards & Teaching Equipment',
+  description: 'Manufacturer & supplier of boards and teaching equipment in Sri Lanka since 1998.',
+};
+
+export default async function Home() {
+  const home = await fetchHome();
+  return <HomePageView home={home} />;
 }

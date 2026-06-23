@@ -11,6 +11,8 @@ const nav = [
   { href: '/admin/notifications', label: 'Emails' },
   { href: '/admin/inquiries', label: 'Inquiries' },
   { href: '/admin/quotes', label: 'Quotes' },
+  { href: '/admin/merch', label: 'Merch' },
+  { href: '/admin/content', label: 'Content' },
   { href: '/admin/2fa', label: '2FA' },
 ];
 
