@@ -1,4 +1,7 @@
 import { Reveal } from '@/components/Reveal';
+import { EditableHtml } from '@/components/EditableHtml';
+
+export const revalidate = 300;
 
 export const metadata = {
   title: 'About Us — Scan Lanka',
@@ -62,18 +65,20 @@ export default function AboutPage() {
           <Reveal delay={80}>
             <div>
               <h1 className="section-title">About Scan Lanka</h1>
-              <p style={para}>
-                With the initiative taken in 1998 Scan Lanka has grown to be the market leader through
-                unique manufacturing and straightforward sales attitudes. At present, we are delivering
-                a wide range of products including factory-made teaching equipment, smart boards,
-                ultra-modern glass writing boards, carrom boards, Dam boards and shoe polish range.
-              </p>
-              <p style={para}>
-                Our industry know-how, high product quality, on-time delivery and friendly customer
-                services are the principal strengths of our continuous development. By maintaining our
-                very own factory, stores, showroom and vehicle fleet, we can guarantee an uninterrupted
-                and on-time delivery.
-              </p>
+              <EditableHtml slug="about" className="prose">
+                <p style={para}>
+                  With the initiative taken in 1998 Scan Lanka has grown to be the market leader through
+                  unique manufacturing and straightforward sales attitudes. At present, we are delivering
+                  a wide range of products including factory-made teaching equipment, smart boards,
+                  ultra-modern glass writing boards, carrom boards, Dam boards and shoe polish range.
+                </p>
+                <p style={para}>
+                  Our industry know-how, high product quality, on-time delivery and friendly customer
+                  services are the principal strengths of our continuous development. By maintaining our
+                  very own factory, stores, showroom and vehicle fleet, we can guarantee an uninterrupted
+                  and on-time delivery.
+                </p>
+              </EditableHtml>
             </div>
           </Reveal>
         </div>

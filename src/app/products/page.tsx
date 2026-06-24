@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
-import { listProducts, getFacets } from '@/lib/catalog';
+import { listProducts, getFacets, getCategoryCounts } from '@/lib/catalog';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductBrowseToolbar } from '@/components/ProductBrowseToolbar';
 import { ProductPagination } from '@/components/ProductPagination';
+import { CategoryTiles } from '@/components/CategoryTiles';
 
 export const revalidate = 60;
 
@@ -24,7 +25,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   const parentId = searchParams.parentId ? Number(searchParams.parentId) : undefined;
   const sort = (searchParams.sort as 'newest' | 'price_asc' | 'price_desc' | 'name') ?? 'newest';
 
-  const [productPage, facets] = await Promise.all([
+  const [productPage, facets, categoryCounts] = await Promise.all([
     listProducts({
       q: searchParams.q,
       category: searchParams.category,
@@ -34,6 +35,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
       size: 24,
     }),
     getFacets(),
+    getCategoryCounts(),
   ]);
 
   const { content: products, totalPages, number } = productPage;
@@ -46,6 +48,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         Browse our full range of boards and teaching equipment — manufactured locally, delivered
         island-wide.
       </p>
+      <CategoryTiles categories={categoryCounts} active={searchParams.category} />
       <Suspense fallback={null}>
         <ProductBrowseToolbar
           facets={facets}

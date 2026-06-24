@@ -1,0 +1,128 @@
+// Admin product management client (01-product-catalog §3). All calls hit /api/admin/** which is
+// ADMIN-gated server-side; cookies are sent by the shared api() client.
+import { api, apiForm } from './api';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8080';
+
+export type PriceMode = 'SINGLE' | 'VARIANT';
+
+export interface AdminProductRow {
+  id: number;
+  name: string;
+  slug: string;
+  sku: string;
+  category: string | null;
+  priceMode: PriceMode;
+  active: boolean;
+  archived: boolean;
+  stockQty: number | null;
+  singlePriceCents: number | null;
+  priceMinCents: number | null;
+  priceMaxCents: number | null;
+  previewImageUrl: string | null;
+}
+
+export interface AdminSpecOption {
+  id: number;
+  value: string;
+}
+export interface AdminSpecGroup {
+  id: number;
+  name: string;
+  priceAffecting: boolean;
+  options: AdminSpecOption[];
+}
+export interface AdminVariant {
+  id: number;
+  sku: string;
+  priceCents: number;
+  optionsSignature: string;
+  availability: string;
+}
+export interface AdminProductDetail {
+  id: number;
+  name: string;
+  slug: string;
+  sku: string;
+  description: string | null;
+  details: string | null;
+  category: string | null;
+  handlingClass: string;
+  parentProductId: number | null;
+  active: boolean;
+  archived: boolean;
+  priceMode: PriceMode;
+  singlePriceCents: number | null;
+  stockQty: number | null;
+  imageUrls: string[];
+  specGroups: AdminSpecGroup[];
+  variants: AdminVariant[];
+}
+
+export interface GroupInput {
+  name: string;
+  priceAffecting: boolean;
+  options: string[];
+}
+export interface VariantInput {
+  optionValues: string[];
+  priceCents: number;
+  sku?: string | null;
+  stockQty?: number | null;
+}
+export interface CreateProductBody {
+  name: string;
+  sku?: string | null;
+  description?: string | null;
+  details?: string | null;
+  category?: string | null;
+  handlingClass?: string | null;
+  stockQty?: number | null;
+  singlePriceCents?: number | null;
+  groups?: GroupInput[];
+  variants?: VariantInput[];
+}
+export interface UpdateProductBody {
+  name?: string;
+  description?: string | null;
+  details?: string | null;
+  category?: string | null;
+  handlingClass?: string | null;
+  active?: boolean;
+  stockQty?: number | null;
+  singlePriceCents?: number | null;
+}
+
+export const adminListProducts = () => api<AdminProductRow[]>('/api/admin/products');
+
+export const adminGetProduct = (id: number) => api<AdminProductDetail>(`/api/admin/products/${id}`);
+
+export const adminCreateProduct = (body: CreateProductBody) =>
+  api<{ id: number }>('/api/admin/products', { method: 'POST', body: JSON.stringify(body) });
+
+export const adminUpdateProduct = (id: number, body: UpdateProductBody) =>
+  api<void>(`/api/admin/products/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+
+export const adminSetProductActive = (id: number, active: boolean) =>
+  api<void>(`/api/admin/products/${id}/active`, { method: 'PATCH', body: JSON.stringify({ active }) });
+
+export const adminDeleteProduct = (id: number) =>
+  api<{ outcome: string }>(`/api/admin/products/${id}`, { method: 'DELETE' });
+
+export interface StoredImageView {
+  id: number;
+  url: string;
+  preview: boolean;
+}
+export function adminUploadProductImage(id: number, file: File, isPreview: boolean) {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('isPreview', String(isPreview));
+  return apiForm<StoredImageView>(`/api/admin/products/${id}/images?isPreview=${isPreview}`, form);
+}
+
+/** Prefix backend-served media paths with the API base for <img src>. */
+export function adminMediaUrl(path: string | null): string | null {
+  if (!path) return null;
+  return path.startsWith('/') ? `${API_BASE}${path}` : path;
+}

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ContentPage, listContentPages, saveContentPage } from '@/lib/content';
 import { mutedText, adminMain, primaryButton, fieldInput } from '@/components/formStyles';
 
-const SLUGS = ['returns', 'privacy', 'terms', 'about'];
+const SLUGS = ['about', 'delivery', 'clientele', 'contact', 'returns', 'privacy', 'terms'];
 
 export default function AdminContentPage() {
   const [pages, setPages] = useState<ContentPage[]>([]);

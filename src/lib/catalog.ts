@@ -64,6 +64,11 @@ export interface CatalogFacets {
   categories: string[];
 }
 
+export interface CategoryCount {
+  name: string;
+  count: number;
+}
+
 export interface ProductPage {
   content: ProductChip[];
   totalElements: number;
@@ -127,6 +132,16 @@ export async function getFacets(): Promise<CatalogFacets> {
     return res.json();
   } catch {
     return { parents: [], categories: [] };
+  }
+}
+
+export async function getCategoryCounts(): Promise<CategoryCount[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/catalog/categories`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
   }
 }
 

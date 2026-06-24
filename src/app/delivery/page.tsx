@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchDeliveryLocations } from '@/lib/delivery';
+import { EditableHtml } from '@/components/EditableHtml';
 
 export const revalidate = 300;
 
@@ -14,13 +15,15 @@ export default async function DeliveryLocationsPage() {
   return (
     <main className="page page-narrow">
       <h1 className="page-title">Delivery locations</h1>
-      <p style={{ color: 'var(--muted)' }}>
-        We deliver to the postal codes below. If yours isn&apos;t listed, choose shop pickup at checkout or{' '}
-        <Link href="/orders/lookup" style={{ color: 'var(--primary)' }}>
-          contact us
-        </Link>
-        .
-      </p>
+      <EditableHtml slug="delivery" className="prose">
+        <p style={{ color: 'var(--muted)' }}>
+          We deliver to the postal codes below. If yours isn&apos;t listed, choose shop pickup at checkout or{' '}
+          <Link href="/orders/lookup" style={{ color: 'var(--primary)' }}>
+            contact us
+          </Link>
+          .
+        </p>
+      </EditableHtml>
 
       {zones.length === 0 ? (
         <p style={{ color: 'var(--muted)' }}>Delivery zones are being configured. Please check back soon.</p>
