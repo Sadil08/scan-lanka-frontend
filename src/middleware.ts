@@ -7,8 +7,13 @@ export function middleware(request: NextRequest) {
   const apiBase = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8080';
   const enforce = process.env.CSP_ENFORCE === 'true';
   const isDev = process.env.NODE_ENV !== 'production';
+  // 'unsafe-eval' is only needed for the local dev server (HMR/React refresh). Gate it on the actual
+  // hostname so a staging box accidentally running with NODE_ENV!=production never ships it (P1-2).
+  const hostname = request.nextUrl.hostname;
+  const isLocalDev =
+    isDev && (hostname === 'localhost' || hostname === '127.0.0.1');
 
-  const scriptSrc = isDev
+  const scriptSrc = isLocalDev
     ? `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'`
     : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`;
 
