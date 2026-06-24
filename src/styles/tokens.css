@@ -1,18 +1,27 @@
-/* Design tokens — match scanlanka.com (global/11_UIUX_DESIGN_PLAN.md).
-   Confirm exact brand hex from the logo/brand kit. */
+/* Design tokens — Scan Lanka storefront (global/11_UIUX_DESIGN_PLAN.md).
+   Professional teaching-equipment supplier look: clean white surfaces, teal-blue brand,
+   warm CTA, generous spacing. Existing variable names are preserved for back-compat. */
 :root {
   --bg: #ffffff;
-  --bg-muted: #f5f7fa;
-  --text: #1f2a37; /* navy / dark slate */
-  --muted: #6b7280;
-  --primary: #0e76a8; /* brand blue/teal — confirm from logo */
+  --bg-muted: #f3f6f9;
+  --surface: #ffffff;
+  --text: #11212e; /* dark navy slate */
+  --muted: #5b6b7a;
+  --primary: #0b6e99; /* brand teal-blue */
+  --primary-dark: #08546f;
   --primary-contrast: #ffffff;
-  --accent: #17a2b8; /* CTA teal */
-  --border: #e5e7eb;
+  --accent: #ef7d00; /* warm CTA orange */
+  --accent-dark: #cc6a00;
+  --border: #e3e8ee;
   --danger: #b42318;
-  --radius: 6px;
-  --shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
-  --font: system-ui, -apple-system, 'Segoe UI', Roboto, Inter, Arial, sans-serif;
+  --success: #15803d;
+  --warning: #b45309;
+  --radius: 8px;
+  --radius-sm: 5px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.1);
+  --shadow-md: 0 6px 18px rgba(16, 24, 40, 0.1);
+  --container: 1200px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
 * {
@@ -22,8 +31,138 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background: var(--bg-muted);
   color: var(--text);
   font-family: var(--font);
-  line-height: 1.5;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: var(--primary);
+}
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  color: var(--text);
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-contrast);
+}
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-accent:hover {
+  background: var(--accent-dark);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.btn-outline:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-ghost-light {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.btn-ghost-light:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* Cards with hover lift */
+.card-hover {
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+.card-hover:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  border-color: #cfd9e2;
+}
+
+/* Header nav links */
+.nav-link {
+  position: relative;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.25rem 0;
+  transition: color 0.15s ease;
+}
+.nav-link:hover {
+  color: var(--primary);
+}
+.icon-link {
+  text-decoration: none;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  transition: color 0.15s ease;
+}
+.icon-link:hover {
+  color: var(--primary);
+}
+
+/* Section heading with accent underline */
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin-top: 0.5rem;
+}
+
+.footer-link {
+  color: #c8d4dd;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.15s ease;
+}
+.footer-link:hover {
+  color: #fff;
 }

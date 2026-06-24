@@ -11,7 +11,7 @@ export function ProductCard({ product }: { product: ProductChip }) {
       : formatRange(product.priceMinCents, product.priceMaxCents);
 
   return (
-    <Link href={`/products/${product.slug}`} style={card}>
+    <Link href={`/products/${product.slug}`} className="card-hover" style={card}>
       <div style={{ ...imgWrap, position: 'relative' }}>
         <WishlistToggle product={product} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
