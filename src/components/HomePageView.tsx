@@ -35,13 +35,8 @@ export function HomePageView({ home, categoryRows = [] }: { home: HomeView; cate
   const [slide, setSlide] = useState(0);
   const [heroFallbackError, setHeroFallbackError] = useState(false);
 
-  // When no banner is configured, show a real product image (or a dropped-in /hero.jpg), then the
-  // CSS whiteboard as a last resort.
-  const productImage =
-    categoryRows.flatMap((r) => r.products).map((p) => mediaUrl(p.previewImageUrl)).find(Boolean) ??
-    home.featured.map((p) => mediaUrl(p.previewImageUrl)).find(Boolean) ??
-    null;
-  const heroFallback = productImage ?? '/hero.jpg';
+  // When no admin banner is configured, use the dropped-in hero image, then the CSS whiteboard.
+  const heroFallback = '/herosectionimg.png';
 
   useEffect(() => {
     if (images.length < 2) return;
