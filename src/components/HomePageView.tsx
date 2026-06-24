@@ -33,6 +33,15 @@ export interface CategoryRow {
 export function HomePageView({ home, categoryRows = [] }: { home: HomeView; categoryRows?: CategoryRow[] }) {
   const images = home.banners.map((b) => mediaUrl(b.imageUrl)).filter(Boolean) as string[];
   const [slide, setSlide] = useState(0);
+  const [heroFallbackError, setHeroFallbackError] = useState(false);
+
+  // When no banner is configured, show a real product image (or a dropped-in /hero.jpg), then the
+  // CSS whiteboard as a last resort.
+  const productImage =
+    categoryRows.flatMap((r) => r.products).map((p) => mediaUrl(p.previewImageUrl)).find(Boolean) ??
+    home.featured.map((p) => mediaUrl(p.previewImageUrl)).find(Boolean) ??
+    null;
+  const heroFallback = productImage ?? '/hero.jpg';
 
   useEffect(() => {
     if (images.length < 2) return;
@@ -68,8 +77,11 @@ export function HomePageView({ home, categoryRows = [] }: { home: HomeView; cate
               {images.length > 0 ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={images[slide]} alt="" style={heroImg} />
-              ) : (
+              ) : heroFallbackError ? (
                 <Whiteboard />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={heroFallback} alt="Scan Lanka boards" style={heroImg} onError={() => setHeroFallbackError(true)} />
               )}
             </div>
             {images.length > 1 && (

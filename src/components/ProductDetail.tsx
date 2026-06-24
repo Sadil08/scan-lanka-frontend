@@ -78,7 +78,10 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const showNext = () => setImageIndex((i) => Math.min(images.length - 1, i + 1));
 
   return (
-    <main style={{ maxWidth: 1000, margin: '0 auto', padding: '2rem 1.5rem' }}>
+    <main className="page">
+      <Link href="/products" className="icon-link" style={{ display: 'inline-flex', marginBottom: '1.25rem' }}>
+        ← Back to products
+      </Link>
       <div style={layout}>
         <div>
           <div
@@ -99,7 +102,11 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
             </div>
             {activeImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={activeImage} alt={product.name} style={{ width: '100%', borderRadius: 'var(--radius)' }} />
+              <img
+                src={activeImage}
+                alt={product.name}
+                style={{ width: '100%', maxHeight: 460, objectFit: 'contain', borderRadius: 'var(--radius-sm)' }}
+              />
             ) : (
               <div style={imgPlaceholder}>No image</div>
             )}
@@ -121,8 +128,8 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
         </div>
 
         <div>
-          <h1 style={{ marginTop: 0 }}>{product.name}</h1>
-          <div style={{ fontSize: '1.4rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>
+          <h1 className="page-title" style={{ marginTop: 0 }}>{product.name}</h1>
+          <div style={{ fontSize: '1.6rem', color: 'var(--primary)', fontWeight: 800, marginBottom: '0.5rem' }}>
             {priceLabel || '—'}
           </div>
           {geo.indicativePricing && (
@@ -199,24 +206,47 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   );
 }
 
-const layout = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' } as const;
-const mainImg = { background: 'var(--bg-muted)', borderRadius: 'var(--radius)', minHeight: 200 } as const;
-const imgPlaceholder = { padding: '4rem', textAlign: 'center', color: 'var(--muted)' } as const;
-const thumbs = { display: 'flex', gap: '0.5rem', marginTop: '0.75rem', flexWrap: 'wrap' } as const;
-const thumb = { width: 64, height: 64, objectFit: 'cover', borderRadius: 4, cursor: 'pointer' } as const;
-const optBtn = {
-  padding: '0.45rem 0.8rem',
+const layout = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' } as const;
+const mainImg = {
+  background: 'var(--surface)',
   border: '1px solid var(--border)',
   borderRadius: 'var(--radius)',
-  background: 'var(--bg)',
+  boxShadow: 'var(--shadow)',
+  padding: '1.25rem',
+  minHeight: 240,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+} as const;
+const imgPlaceholder = { padding: '4rem', textAlign: 'center', color: 'var(--muted)' } as const;
+const thumbs = { display: 'flex', gap: '0.5rem', marginTop: '0.75rem', flexWrap: 'wrap' } as const;
+const thumb = {
+  width: 64,
+  height: 64,
+  objectFit: 'cover',
+  borderRadius: 'var(--radius-sm)',
+  border: '1px solid var(--border)',
   cursor: 'pointer',
+  background: 'var(--surface)',
+} as const;
+const optBtn = {
+  padding: '0.5rem 0.9rem',
+  border: '1px solid var(--border)',
+  borderRadius: 'var(--radius)',
+  background: 'var(--surface)',
+  cursor: 'pointer',
+  fontWeight: 500,
+  transition: 'border-color 0.15s var(--ease), background 0.15s var(--ease)',
 } as const;
 const optBtnActive = { borderColor: 'var(--primary)', background: 'var(--primary)', color: 'var(--primary-contrast)' } as const;
 const addBtn = {
-  padding: '0.7rem 1.5rem',
-  background: 'var(--accent)',
+  padding: '0.85rem 1.75rem',
+  background: 'var(--primary)',
   color: 'var(--primary-contrast)',
   border: 'none',
   borderRadius: 'var(--radius)',
   fontSize: '1rem',
+  fontWeight: 600,
+  marginTop: '0.5rem',
+  transition: 'background 0.18s var(--ease)',
 } as const;
