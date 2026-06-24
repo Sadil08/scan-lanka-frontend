@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { listInquiries, markInquiryHandled, InquiryView } from '@/lib/contact';
-import { mutedText, pageWrap } from '@/components/formStyles';
+import { mutedText, adminMain } from '@/components/formStyles';
 
 export default function AdminInquiriesPage() {
   const [items, setItems] = useState<InquiryView[]>([]);
@@ -14,7 +14,7 @@ export default function AdminInquiriesPage() {
   }, []);
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Contact inquiries</h1>
       {items.length === 0 ? (
         <p style={mutedText}>No new inquiries.</p>

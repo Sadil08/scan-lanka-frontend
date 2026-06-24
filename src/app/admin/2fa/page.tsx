@@ -11,7 +11,7 @@ import {
   fieldInput,
   formStack,
   mutedText,
-  pageWrap,
+  adminMain,
   primaryButton,
   textLink,
 } from '@/components/formStyles';
@@ -43,7 +43,7 @@ function Admin2faContent() {
 
   if (user?.role !== 'ADMIN') {
     return (
-      <main style={pageWrap}>
+      <main style={adminMain}>
         <p style={dangerText}>Admin access only.</p>
       </main>
     );
@@ -66,7 +66,7 @@ function Admin2faContent() {
 
   if (enabled) {
     return (
-      <main style={pageWrap}>
+      <main style={adminMain}>
         <h1 style={{ color: 'var(--primary)' }}>Two-factor authentication</h1>
         <p style={mutedText}>2FA is already enabled on your admin account.</p>
         <a href="/account" style={textLink}>
@@ -77,7 +77,7 @@ function Admin2faContent() {
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1 style={{ color: 'var(--primary)' }}>Set up admin 2FA</h1>
       <p style={mutedText}>
         Scan the secret below in your authenticator app (Google Authenticator, Authy, etc.), then enter

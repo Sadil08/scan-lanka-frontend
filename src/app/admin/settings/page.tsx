@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getSettings, putSettings, SettingsView } from '@/lib/admin';
-import { pageWrap } from '@/components/formStyles';
+import { adminMain } from '@/components/formStyles';
 
 export default function AdminSettingsPage() {
   const [s, setS] = useState<SettingsView | null>(null);
@@ -14,14 +14,14 @@ export default function AdminSettingsPage() {
 
   if (!s) {
     return (
-      <main style={pageWrap}>
+      <main style={adminMain}>
         <p>Loading…</p>
       </main>
     );
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Store settings</h1>
       {msg && <p>{msg}</p>}
       <label style={{ display: 'block', marginBottom: '0.5rem' }}>

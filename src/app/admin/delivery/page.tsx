@@ -12,7 +12,7 @@ import {
   updateZone,
   ZoneView,
 } from '@/lib/admin';
-import { pageWrap } from '@/components/formStyles';
+import { adminMain } from '@/components/formStyles';
 
 export default function AdminDeliveryPage() {
   const [zones, setZones] = useState<ZoneView[]>([]);
@@ -46,7 +46,7 @@ export default function AdminDeliveryPage() {
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Delivery & tax</h1>
       {msg && <p>{msg}</p>}
 

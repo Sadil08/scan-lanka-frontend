@@ -51,6 +51,9 @@ export const secondaryButton = {
   width: '100%',
 } as const;
 
+/** Full-width content wrapper for admin pages (rendered inside the admin sidebar layout). */
+export const adminMain = { maxWidth: 1040, margin: '0 auto', padding: '2rem 2rem 3rem', width: '100%' } as const;
+
 export const pageTitle = { fontSize: '1.6rem', fontWeight: 800, color: 'var(--text)', margin: 0 } as const;
 export const mutedText = { color: 'var(--muted)', fontSize: '0.92rem' } as const;
 export const dangerText = { color: 'var(--danger)', fontSize: '0.92rem' } as const;

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { adminConvertQuote, adminQuoteMessage, getAdminQuote, QuoteView } from '@/lib/quotes';
 import { formatLkr } from '@/lib/money';
-import { fieldInput, mutedText, pageWrap, primaryButton } from '@/components/formStyles';
+import { fieldInput, mutedText, adminMain, primaryButton } from '@/components/formStyles';
 
 export default function AdminQuoteDetailPage() {
   const params = useParams();
@@ -23,7 +23,7 @@ export default function AdminQuoteDetailPage() {
 
   if (!quote) {
     return (
-      <main style={pageWrap}>
+      <main style={adminMain}>
         <p style={mutedText}>Loading…</p>
       </main>
     );
@@ -38,7 +38,7 @@ export default function AdminQuoteDetailPage() {
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <p>
         <Link href="/admin/quotes">← Quotes</Link>
       </p>

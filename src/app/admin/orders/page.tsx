@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { listOrders, OrderSummary } from '@/lib/admin';
 import { formatLkr } from '@/lib/money';
-import { mutedText, pageWrap } from '@/components/formStyles';
+import { mutedText, adminMain } from '@/components/formStyles';
 
 const VIEWS = [
   { id: 'pending_payment', label: 'Pending payment' },
@@ -27,7 +27,7 @@ export default function AdminOrdersPage() {
   }, [view, q]);
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Orders</h1>
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
         {VIEWS.map((v) => (

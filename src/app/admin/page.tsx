@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { DashboardView, fetchDashboard } from '@/lib/admin';
 import { formatLkr } from '@/lib/money';
-import { mutedText, pageWrap } from '@/components/formStyles';
+import { mutedText, adminMain } from '@/components/formStyles';
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardView | null>(null);
@@ -14,8 +14,8 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <main style={pageWrap}>
-      <h1>Dashboard</h1>
+    <main style={adminMain}>
+      <h1 className="page-title">Dashboard</h1>
       {!data ? (
         <p style={mutedText}>Loading…</p>
       ) : (
@@ -48,9 +48,21 @@ export default function AdminDashboardPage() {
 
 function Stat({ label, value, href }: { label: string; value: number; href: string }) {
   return (
-    <Link href={href} style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem', textDecoration: 'none', color: 'inherit' }}>
-      <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{value}</div>
-      <div style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>{label}</div>
+    <Link
+      href={href}
+      className="card-hover"
+      style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        boxShadow: 'var(--shadow)',
+        padding: '1.1rem 1.25rem',
+        textDecoration: 'none',
+        color: 'inherit',
+      }}
+    >
+      <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)' }}>{value}</div>
+      <div style={{ color: 'var(--muted)', fontSize: '0.85rem', marginTop: '0.15rem' }}>{label}</div>
     </Link>
   );
 }

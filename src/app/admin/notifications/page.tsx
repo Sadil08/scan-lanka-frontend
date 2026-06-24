@@ -6,7 +6,7 @@ import {
   listAdminNotifications,
   resendNotification,
 } from '@/lib/admin-notifications';
-import { mutedText, pageWrap } from '@/components/formStyles';
+import { mutedText, adminMain } from '@/components/formStyles';
 
 export default function AdminNotificationsPage() {
   const [rows, setRows] = useState<AdminNotification[]>([]);
@@ -35,7 +35,7 @@ export default function AdminNotificationsPage() {
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Email notifications</h1>
       <p style={mutedText}>Outbox status — sent, retrying, or failed messages.</p>
       <label style={{ display: 'block', margin: '1rem 0' }}>

@@ -12,7 +12,7 @@ import {
   updateBanner,
   uploadBannerImage,
 } from '@/lib/home';
-import { mutedText, pageWrap, primaryButton, fieldInput } from '@/components/formStyles';
+import { mutedText, adminMain, primaryButton, fieldInput } from '@/components/formStyles';
 
 const emptyBanner = {
   linkUrl: '',
@@ -93,7 +93,7 @@ export default function AdminMerchPage() {
   }
 
   return (
-    <main style={{ ...pageWrap, maxWidth: 720 }}>
+    <main style={{ ...adminMain, maxWidth: 720 }}>
       <h1>Homepage merchandising</h1>
       {msg && <p>{msg}</p>}
 

@@ -21,7 +21,7 @@ import {
 } from '@/lib/admin';
 import { saveBlob } from '@/lib/admin-notifications';
 import { formatLkr } from '@/lib/money';
-import { mutedText, pageWrap } from '@/components/formStyles';
+import { mutedText, adminMain } from '@/components/formStyles';
 
 const ITEM_STATUSES = ['PENDING', 'PREPARING', 'PREPARED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
 const ORDER_STATUSES = ['PACKED', 'SHIPPED', 'READY_FOR_PICKUP', 'COMPLETED', 'CANCELLED'];
@@ -65,14 +65,14 @@ export default function AdminOrderDetailPage() {
 
   if (!order) {
     return (
-      <main style={pageWrap}>
+      <main style={adminMain}>
         <p style={mutedText}>Loading…</p>
       </main>
     );
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <p>
         <Link href="/admin/orders">← Orders</Link>
       </p>

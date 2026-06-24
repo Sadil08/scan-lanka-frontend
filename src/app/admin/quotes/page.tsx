@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { listAdminQuotes, QuoteView } from '@/lib/quotes';
-import { mutedText, pageWrap } from '@/components/formStyles';
+import { mutedText, adminMain } from '@/components/formStyles';
 
 export default function AdminQuotesPage() {
   const [quotes, setQuotes] = useState<QuoteView[]>([]);
@@ -15,7 +15,7 @@ export default function AdminQuotesPage() {
   }, []);
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Quote requests</h1>
       {quotes.length === 0 ? (
         <p style={mutedText}>No quotes yet.</p>

@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ContentPage, listContentPages, saveContentPage } from '@/lib/content';
-import { mutedText, pageWrap, primaryButton, fieldInput } from '@/components/formStyles';
+import { mutedText, adminMain, primaryButton, fieldInput } from '@/components/formStyles';
 
 const SLUGS = ['returns', 'privacy', 'terms', 'about'];
 
@@ -42,7 +42,7 @@ export default function AdminContentPage() {
   }
 
   return (
-    <main style={pageWrap}>
+    <main style={adminMain}>
       <h1>Content pages</h1>
       <p style={mutedText}>
         HTML is sanitized on save. Public pages:{' '}
