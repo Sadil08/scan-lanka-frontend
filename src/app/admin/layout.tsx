@@ -7,6 +7,7 @@ import { AdminGuard } from '@/components/AdminGuard';
 const nav = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/products', label: 'Products' },
+  { href: '/admin/categories', label: 'Categories' },
   { href: '/admin/orders', label: 'Orders' },
   { href: '/admin/quotes', label: 'Quotes' },
   { href: '/admin/inquiries', label: 'Inquiries' },

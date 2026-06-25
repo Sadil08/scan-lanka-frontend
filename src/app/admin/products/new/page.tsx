@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { adminListProducts } from '@/lib/admin-catalog';
+import { adminListCategories } from '@/lib/admin-catalog';
 import { ProductForm } from '@/components/admin/ProductForm';
 import { adminMain, mutedText } from '@/components/formStyles';
 
@@ -10,8 +10,8 @@ export default function NewProductPage() {
   const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    adminListProducts()
-      .then((rows) => setCategories(Array.from(new Set(rows.map((r) => r.category).filter(Boolean))).sort() as string[]))
+    adminListCategories()
+      .then((rows) => setCategories(rows.map((r) => r.name)))
       .catch(() => setCategories([]));
   }, []);
 

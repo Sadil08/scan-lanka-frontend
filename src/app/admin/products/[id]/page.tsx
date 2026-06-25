@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { AdminProductDetail, adminGetProduct, adminListProducts } from '@/lib/admin-catalog';
+import { AdminProductDetail, adminGetProduct, adminListCategories } from '@/lib/admin-catalog';
 import { ProductForm } from '@/components/admin/ProductForm';
 import { adminMain, mutedText } from '@/components/formStyles';
 
@@ -19,8 +19,8 @@ export default function EditProductPage() {
     adminGetProduct(id)
       .then(setProduct)
       .catch((e) => setError(e instanceof Error ? e.message : 'Not found'));
-    adminListProducts()
-      .then((rows) => setCategories(Array.from(new Set(rows.map((r) => r.category).filter(Boolean))).sort() as string[]))
+    adminListCategories()
+      .then((rows) => setCategories(rows.map((r) => r.name)))
       .catch(() => setCategories([]));
   }, [id]);
 

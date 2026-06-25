@@ -9,9 +9,11 @@ import {
   cancelOrder,
   codReceived,
   downloadAdminReceipt,
+  fetchDispatchSummary,
   getOrder,
   listRefunds,
   OrderDetail,
+  DispatchSummary,
   recordRefund,
   recordDeliveryActual,
   RefundView,
@@ -44,6 +46,7 @@ export default function AdminOrderDetailPage() {
   const [refundReason, setRefundReason] = useState('');
   const [refundRef, setRefundRef] = useState('');
   const [lineDisposition, setLineDisposition] = useState<Record<number, string>>({});
+  const [dispatch, setDispatch] = useState<DispatchSummary | null>(null);
 
   const reload = async () => {
     const [o, r] = await Promise.all([getOrder(orderNumber), listRefunds(orderNumber).catch(() => [])]);
@@ -83,6 +86,33 @@ export default function AdminOrderDetailPage() {
       <p>
         {order.contactName} — {order.contactEmail} — {order.contactPhone}
       </p>
+      {order.customerId != null && (
+        <p style={mutedText}>
+          Registered customer ·{' '}
+          <Link href={`/admin/customers/${order.customerId}`}>View all orders for this customer</Link>
+        </p>
+      )}
+
+      <section style={{ marginTop: '1rem' }}>
+        <h2 style={{ fontSize: '1.05rem' }}>Dispatch summary</h2>
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              setDispatch(await fetchDispatchSummary(orderNumber));
+            } catch {
+              setError('Could not load dispatch summary.');
+            }
+          }}
+        >
+          Load dispatch summary
+        </button>
+        {dispatch && (
+          <pre style={{ fontSize: '0.82rem', marginTop: '0.5rem', whiteSpace: 'pre-wrap' }}>
+            {JSON.stringify(dispatch, null, 2)}
+          </pre>
+        )}
+      </section>
 
       <section style={{ marginTop: '1.5rem' }}>
         <h2 style={{ fontSize: '1.05rem' }}>Lines</h2>

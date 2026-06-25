@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { adminConvertQuote, adminQuoteMessage, getAdminQuote, QuoteView } from '@/lib/quotes';
+import { adminAcceptQuote, adminConvertQuote, adminQuoteMessage, getAdminQuote, QuoteView } from '@/lib/quotes';
 import { formatLkr } from '@/lib/money';
 import { fieldInput, mutedText, adminMain, primaryButton } from '@/components/formStyles';
 
@@ -70,6 +70,18 @@ export default function AdminQuoteDetailPage() {
             Send admin reply
           </button>
         </form>
+        {quote.status !== 'ACCEPTED' && quote.status !== 'CONVERTED' && (
+          <button
+            type="button"
+            style={{ ...primaryButton, marginTop: '0.75rem', width: 'auto' }}
+            onClick={async () => {
+              await adminAcceptQuote(id);
+              await reload();
+            }}
+          >
+            Mark quote accepted (admin)
+          </button>
+        )}
         {quote.status === 'ACCEPTED' && (
           <button
             type="button"

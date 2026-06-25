@@ -40,6 +40,7 @@ export interface OrderLine {
 }
 
 export interface OrderDetail {
+  customerId: number | null;
   orderNumber: string;
   status: string;
   contactName: string;
@@ -140,8 +141,30 @@ export const codReceived = (orderNumber: string) =>
 
 export const listZones = () => api<ZoneView[]>('/api/admin/delivery-zones');
 
+export const createZone = (body: Omit<ZoneView, 'id'>) =>
+  api<ZoneView>('/api/admin/delivery-zones', { method: 'POST', body: JSON.stringify(body) });
+
 export const updateZone = (id: number, body: Omit<ZoneView, 'id'>) =>
   api<ZoneView>(`/api/admin/delivery-zones/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+
+export const deleteZone = (id: number) =>
+  api<void>(`/api/admin/delivery-zones/${id}`, { method: 'DELETE' });
+
+export interface DispatchSummary {
+  orderNumber: string;
+  fulfilmentType: string;
+  deliveryPayment: string;
+  ship: { street: string; city: string; province: string; postalCode: string };
+  totalCents: number;
+  deliveryCodCents: number;
+  lines: { sku: string; name: string; quantity: number; handlingClass: string }[];
+}
+
+export const fetchDispatchSummary = (orderNumber: string) =>
+  api<DispatchSummary>(`/api/admin/orders/${encodeURIComponent(orderNumber)}/dispatch-summary`);
+
+export const listCustomerOrders = (customerId: number) =>
+  api<OrderSummary[]>(`/api/admin/orders/customers/${customerId}`);
 
 export const getDeliveryConfig = () => api<DeliveryConfigView>('/api/admin/delivery-config');
 export const putDeliveryConfig = (body: DeliveryConfigView) =>

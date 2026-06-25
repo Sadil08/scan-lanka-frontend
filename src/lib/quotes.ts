@@ -73,3 +73,6 @@ export const adminQuoteMessage = (id: number, body: string, quotedPriceCents?: n
 
 export const adminConvertQuote = (id: number) =>
   api<{ orderNumber: string }>(`/api/admin/quotes/${id}/convert`, { method: 'POST' });
+
+export const adminAcceptQuote = (id: number) =>
+  api<void>(`/api/admin/quotes/${id}/accept`, { method: 'POST' });

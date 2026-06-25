@@ -97,6 +97,25 @@ export const adminListProducts = () => api<AdminProductRow[]>('/api/admin/produc
 
 export const adminGetProduct = (id: number) => api<AdminProductDetail>(`/api/admin/products/${id}`);
 
+export interface AdminCategoryRow {
+  name: string;
+  productCount: number;
+}
+
+export const adminListCategories = () => api<AdminCategoryRow[]>('/api/admin/categories');
+
+export const adminRenameCategory = (from: string, to: string) =>
+  api<{ updated: number }>('/api/admin/categories/rename', {
+    method: 'PUT',
+    body: JSON.stringify({ from, to }),
+  });
+
+export const previewVariants = (groups: GroupInput[]) =>
+  api<{ rows: { optionValues: string[]; index: number }[] }>('/api/admin/products/variants/preview', {
+    method: 'POST',
+    body: JSON.stringify(groups),
+  });
+
 export const adminCreateProduct = (body: CreateProductBody) =>
   api<{ id: number }>('/api/admin/products', { method: 'POST', body: JSON.stringify(body) });
 
