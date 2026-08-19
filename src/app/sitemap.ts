@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
-import { listProducts } from '@/lib/catalog';
+import { listProducts, getFacets } from '@/lib/catalog';
 import { siteBase } from '@/lib/site';
+import { categoryPath, knownCategorySlugs } from '@/lib/categories';
 
 const base = siteBase();
 
@@ -31,6 +32,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: '/delivery', changeFrequency: 'monthly', priority: 0.6 },
     { path: '/returns', changeFrequency: 'monthly', priority: 0.5 },
     { path: '/quote', changeFrequency: 'monthly', priority: 0.6 },
+    ...knownCategorySlugs().map((slug) => ({
+      path: `/${slug}`,
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
     { path: '/privacy', changeFrequency: 'yearly', priority: 0.3 },
     { path: '/terms', changeFrequency: 'yearly', priority: 0.3 },
   ];
@@ -42,6 +48,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency,
     priority,
   }));
+
+  try {
+    const facets = await getFacets();
+    const seen = new Set(knownCategorySlugs());
+    for (const name of facets.categories) {
+      const path = categoryPath(name);
+      const slug = path.slice(1);
+      if (seen.has(slug)) continue;
+      seen.add(slug);
+      entries.push({
+        url: `${base}${path}`,
+        lastModified: now,
+        changeFrequency: 'weekly',
+        priority: 0.85,
+      });
+    }
+  } catch {
+    /* facets offline — static category URLs still listed above */
+  }
 
   try {
     const slugs = await allProductSlugs();

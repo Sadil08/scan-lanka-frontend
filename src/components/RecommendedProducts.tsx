@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ProductChip } from '@/lib/catalog';
 import { ProductCard } from '@/components/ProductCard';
+import { categoryPath } from '@/lib/categories';
 
 /** Same-category (or sibling) strip under the PDP — mirrors home category rows. */
 export function RecommendedProducts({
@@ -12,9 +13,7 @@ export function RecommendedProducts({
 }) {
   if (products.length === 0) return null;
 
-  const browseHref = category?.trim()
-    ? `/products?category=${encodeURIComponent(category.trim())}`
-    : '/products';
+  const browseHref = category?.trim() ? categoryPath(category.trim()) : '/products';
 
   return (
     <section style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>

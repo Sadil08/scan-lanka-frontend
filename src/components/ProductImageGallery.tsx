@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { productImageAlt } from '@/lib/categories';
 
 type Props = {
   images: string[];
@@ -130,7 +131,7 @@ export function ProductImageGallery({ images, alt, cornerAction }: Props) {
                   so the main product photo paints fast. `fill` needs the sized, relative zoomBtn wrapper. */}
               <Image
                 src={activeImage}
-                alt={alt}
+                alt={productImageAlt(alt, { index: imageIndex, total: images.length })}
                 fill
                 sizes="(max-width: 900px) 92vw, 600px"
                 quality={70}
@@ -210,7 +211,13 @@ export function ProductImageGallery({ images, alt, cornerAction }: Props) {
                 aria-current={idx === imageIndex}
                 onClick={() => setImageIndex(idx)}
               >
-                <Image src={src} alt="" width={64} height={64} style={thumbImg} />
+                <Image
+                  src={src}
+                  alt={productImageAlt(alt, { index: idx, total: images.length })}
+                  width={64}
+                  height={64}
+                  style={thumbImg}
+                />
               </button>
             ))}
           </div>
@@ -253,7 +260,7 @@ export function ProductImageGallery({ images, alt, cornerAction }: Props) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={activeImage}
-            alt={alt}
+            alt={productImageAlt(alt, { index: imageIndex, total: images.length })}
             style={lightboxImg}
             onClick={(e) => e.stopPropagation()}
           />

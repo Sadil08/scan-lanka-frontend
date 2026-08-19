@@ -1,16 +1,18 @@
 import { Suspense } from 'react';
+import { permanentRedirect } from 'next/navigation';
 import { listProducts, getFacets, getCategoryCounts } from '@/lib/catalog';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductBrowseToolbar } from '@/components/ProductBrowseToolbar';
 import { ProductPagination } from '@/components/ProductPagination';
 import { CategoryTiles } from '@/components/CategoryTiles';
+import { categoryPath } from '@/lib/categories';
 
 export const revalidate = 60;
 
 export const metadata = {
-  title: 'Products',
+  title: { absolute: 'Boards & Teaching Equipment | Buy Online | Scan Lanka' },
   description:
-    'Browse Scan Lanka whiteboards, magnetic boards, carrom boards, notice boards, easels and teaching equipment — prices in LKR, delivery across Sri Lanka.',
+    'Shop whiteboards, notice boards, carrom boards and teaching equipment from Sri Lanka’s manufacturer since 1998. Island-wide delivery.',
   alternates: { canonical: '/products' },
 };
 
@@ -24,6 +26,15 @@ type SearchParams = {
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const sp = await searchParams;
+  if (sp.category?.trim()) {
+    const qs = new URLSearchParams();
+    if (sp.q) qs.set('q', sp.q);
+    if (sp.parentId) qs.set('parentId', sp.parentId);
+    if (sp.sort) qs.set('sort', sp.sort);
+    if (sp.page && sp.page !== '0') qs.set('page', sp.page);
+    const dest = categoryPath(sp.category);
+    permanentRedirect(qs.toString() ? `${dest}?${qs.toString()}` : dest);
+  }
   const page = Math.max(0, Number(sp.page ?? 0) || 0);
   const parentId = sp.parentId ? Number(sp.parentId) : undefined;
   const sort = (sp.sort as 'newest' | 'price_asc' | 'price_desc' | 'name') ?? 'newest';

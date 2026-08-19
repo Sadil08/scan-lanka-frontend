@@ -8,7 +8,7 @@ import { GeoProvider } from '@/components/GeoProvider';
 import { StorefrontChrome } from '@/components/StorefrontChrome';
 import { JsonLd } from '@/components/JsonLd';
 import { buildSiteJsonLd } from '@/lib/site-jsonld';
-import { SITE_NAME, SITE_DEFAULT_TITLE, SITE_SEO_NAME, absoluteUrl, siteBase } from '@/lib/site';
+import { SITE_NAME, SITE_DEFAULT_TITLE, SITE_DEFAULT_DESCRIPTION, absoluteUrl, siteBase } from '@/lib/site';
 
 // Modern, professional sans for the whole storefront (body, nav, headings,
 // homepage category titles). Wired into `--font` via tokens.css.
@@ -35,31 +35,28 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: SITE_DEFAULT_TITLE,
-    template: `%s | ${SITE_SEO_NAME}`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Sri Lanka's leading manufacturer and supplier of boards and teaching equipment since 1998 — whiteboards, notice boards, carrom boards, easels and more.",
-  applicationName: SITE_SEO_NAME,
+  description: SITE_DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
   authors: [{ name: SITE_NAME, url: siteUrl }],
   alternates: { canonical: '/', languages: { 'en-LK': '/', 'x-default': '/' } },
   manifest: '/site.webmanifest',
   openGraph: {
     title: SITE_DEFAULT_TITLE,
-    description:
-      'Manufacturer & supplier of boards and teaching equipment in Sri Lanka since 1998.',
+    description: SITE_DEFAULT_DESCRIPTION,
     url: siteUrl,
     siteName: SITE_NAME,
     locale: 'en_LK',
     type: 'website',
     images: ogImage
-      ? [{ url: ogImage, width: 1200, height: 630, alt: `${SITE_SEO_NAME} — boards & teaching equipment` }]
+      ? [{ url: ogImage, width: 1200, height: 630, alt: 'Scan Lanka whiteboards and teaching equipment' }]
       : undefined,
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_DEFAULT_TITLE,
-    description:
-      'Manufacturer & supplier of boards and teaching equipment in Sri Lanka since 1998.',
+    description: SITE_DEFAULT_DESCRIPTION,
     images: ogImage ? [ogImage] : undefined,
   },
   icons: {

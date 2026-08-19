@@ -1,7 +1,7 @@
 import { fetchHome } from '@/lib/home';
 import { getFacets, listProducts, type ProductChip } from '@/lib/catalog';
 import { HomePageView } from '@/components/HomePageView';
-import { SITE_DEFAULT_TITLE } from '@/lib/site';
+import { SITE_DEFAULT_TITLE, SITE_DEFAULT_DESCRIPTION } from '@/lib/site';
 
 export const revalidate = 120;
 
@@ -46,8 +46,7 @@ function orderHomeRow(category: string, products: ProductChip[]): ProductChip[] 
 
 export const metadata = {
   title: { absolute: SITE_DEFAULT_TITLE },
-  description:
-    "Sri Lanka's leading manufacturer and supplier of boards and teaching equipment since 1998 — whiteboards, notice boards, carrom boards, easels and more.",
+  description: SITE_DEFAULT_DESCRIPTION,
   alternates: { canonical: '/' },
 };
 

@@ -8,17 +8,18 @@ import { ClientLogos } from '@/components/ClientLogos';
 import { HeroVideoCrossfade } from '@/components/HeroVideoCrossfade';
 import { HomeBannerCarousel } from '@/components/HomeBannerCarousel';
 import { Reveal } from '@/components/Reveal';
+import { categoryPath } from '@/lib/categories';
 
-const CATEGORIES = [
-  'Whiteboards',
-  'Notice Boards',
-  'Carrom Boards',
-  'Glass Boards',
-  'Easel Stands',
-  'Menu Boards',
-  'Cork Boards',
-  'Accessories',
-];
+const FALLBACK_CATEGORY_HREF: Record<string, string> = {
+  Whiteboards: '/whiteboards',
+  'Notice Boards': '/notice-boards',
+  'Carrom Boards': '/carrom-boards',
+  'Glass Boards': '/glass-writing-boards',
+  'Easel Stands': '/wooden-easels',
+  'Menu Boards': '/menu-boards',
+  'Cork Boards': '/notice-boards',
+  Accessories: '/products',
+};
 
 const TRUST = [
   { t: 'Since 1998', d: 'Two decades of trusted supply' },
@@ -82,7 +83,7 @@ export function HomePageView({ home, categoryRows = [] }: { home: HomeView; cate
                 <div style={sectionHead}>
                   <h2 className="section-title">{row.category}</h2>
                   <Link
-                    href={`/products?category=${encodeURIComponent(row.category)}`}
+                    href={categoryPath(row.category)}
                     className="icon-link"
                     style={{ color: 'var(--primary)' }}
                   >
@@ -129,9 +130,9 @@ export function HomePageView({ home, categoryRows = [] }: { home: HomeView; cate
               </div>
             </Reveal>
             <div style={catGrid}>
-              {CATEGORIES.map((c, i) => (
+              {Object.entries(FALLBACK_CATEGORY_HREF).map(([c, href], i) => (
                 <Reveal key={c} delay={i * 50}>
-                  <Link href={`/products?category=${encodeURIComponent(c)}`} className="card-hover" style={catCard}>
+                  <Link href={href} className="card-hover" style={catCard}>
                     <span style={catIcon}>▦</span>
                     <span style={{ fontWeight: 600 }}>{c}</span>
                   </Link>

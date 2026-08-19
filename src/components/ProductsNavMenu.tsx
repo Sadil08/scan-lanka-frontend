@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { categoryPath } from '@/lib/categories';
 
 /** One top-level group in the Our Products nav (from /api/catalog/nav-menu). */
 export interface NavMenuGroup {
@@ -29,7 +30,7 @@ function useNavMenu(): NavMenuGroup[] {
   return groups;
 }
 
-const categoryHref = (name: string) => `/products?category=${encodeURIComponent(name)}`;
+const categoryHref = (name: string) => categoryPath(name);
 const productHref = (slug: string) => `/products/${encodeURIComponent(slug)}`;
 
 /** Shorter labels for the nav only — keeps the 4-column layout readable. */

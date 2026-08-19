@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { CategoryCount } from '@/lib/catalog';
+import { categoryPath } from '@/lib/categories';
 
 /**
- * Clickable category tiles for the shop, mirroring the live site's category row
- * (name + product count). Selecting a tile filters the grid via ?category=.
+ * Clickable category tiles for the shop (name + product count).
+ * Selecting a tile opens the dedicated category URL.
  */
 export function CategoryTiles({
   categories,
@@ -26,7 +27,7 @@ export function CategoryTiles({
         return (
           <Link
             key={c.name}
-            href={`/products?category=${encodeURIComponent(c.name)}`}
+            href={categoryPath(c.name)}
             style={{ ...tile, ...(isActive ? tileActive : null) }}
           >
             <span style={tileName}>{c.name}</span>

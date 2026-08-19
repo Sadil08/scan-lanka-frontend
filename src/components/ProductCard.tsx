@@ -6,6 +6,7 @@ import { ProductChip, mediaUrl } from '@/lib/catalog';
 import { formatDisplayPrice, formatDisplayRange } from '@/lib/displayMoney';
 import { useGeo } from '@/components/GeoProvider';
 import { WishlistToggle } from '@/components/WishlistToggle';
+import { productImageAlt } from '@/lib/categories';
 
 export function ProductCard({ product, priority = false }: { product: ProductChip; priority?: boolean }) {
   const { geo } = useGeo();
@@ -24,7 +25,7 @@ export function ProductCard({ product, priority = false }: { product: ProductChi
           // full backend image; the container is position:relative with a fixed aspect-ratio, so `fill` fits.
           <Image
             src={img}
-            alt={product.name}
+            alt={productImageAlt(product.name)}
             className="zoom"
             fill
             sizes="(max-width: 600px) 50vw, (max-width: 1000px) 33vw, 260px"

@@ -12,6 +12,7 @@ import { WishlistToggle } from '@/components/WishlistToggle';
 import { ProductImageGallery } from '@/components/ProductImageGallery';
 import { CartGlyph } from '@/components/ProductCard';
 import { RecommendedProducts } from '@/components/RecommendedProducts';
+import { categoryPath } from '@/lib/categories';
 
 function stockLabel(availability: string): string | null {
   if (availability === 'OUT_OF_STOCK') return 'Out of stock';
@@ -126,8 +127,12 @@ export function ProductDetailView({
 
   return (
     <main className="page pdp-page">
-      <Link href="/products" className="icon-link" style={{ display: 'inline-flex', marginBottom: '1.25rem' }}>
-        ← Back to products
+      <Link
+        href={product.category ? categoryPath(product.category) : '/products'}
+        className="icon-link"
+        style={{ display: 'inline-flex', marginBottom: '1.25rem' }}
+      >
+        ← Back to {product.category || 'products'}
       </Link>
       <div className="product-detail-layout" style={layout}>
         <ProductImageGallery

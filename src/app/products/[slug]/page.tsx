@@ -17,9 +17,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const description =
     p.description?.trim() ||
     `Buy ${p.name} from ${SITE_NAME} — quality boards & teaching equipment in Sri Lanka since 1998.`;
-  const seoTitle = `${p.name} Price in Sri Lanka`;
+  const seoTitle = `${p.name} Price in Sri Lanka | ${SITE_NAME}`;
   return {
-    title: seoTitle,
+    title: { absolute: seoTitle },
     description,
     alternates: { canonical: url, languages: { 'en-LK': url, 'x-default': url } },
     openGraph: {

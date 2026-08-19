@@ -166,7 +166,7 @@ export function HeaderSearch({ onNavigate }: { onNavigate?: () => void }) {
                   >
                     <span style={thumb}>
                       {img ? (
-                        <Image src={img} alt="" fill sizes="40px" style={{ objectFit: 'cover' }} />
+                        <Image src={img} alt={p.name} fill sizes="40px" style={{ objectFit: 'cover' }} />
                       ) : (
                         <span style={thumbFallback} aria-hidden="true">
                           🖼

@@ -3,6 +3,7 @@
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 import type { CatalogFacets } from '@/lib/catalog';
+import { categoryPath } from '@/lib/categories';
 
 export interface BrowseToolbarProps {
   facets: CatalogFacets;
@@ -46,7 +47,19 @@ export function ProductBrowseToolbar({ facets, q, category, parentId, sort }: Br
       />
       <select
         value={category ?? ''}
-        onChange={(e) => update({ category: e.target.value || undefined })}
+        onChange={(e) => {
+          const nextCat = e.target.value || undefined;
+          const next = new URLSearchParams(searchParams.toString());
+          next.delete('category');
+          next.delete('page');
+          if (q) next.set('q', q);
+          const qs = next.toString();
+          if (!nextCat) {
+            router.push(qs ? `/products?${qs}` : '/products');
+            return;
+          }
+          router.push(qs ? `${categoryPath(nextCat)}?${qs}` : categoryPath(nextCat));
+        }}
         style={select}
         aria-label="Category"
       >
