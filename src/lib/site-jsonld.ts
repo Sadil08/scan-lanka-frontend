@@ -65,14 +65,8 @@ export function buildSiteJsonLd(): Record<string, unknown> {
         url: base,
         inLanguage: 'en-LK',
         publisher: { '@id': `${base}/#organization` },
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: `${base}/products?q={search_term_string}`,
-          },
-          'query-input': 'required name=search_term_string',
-        },
+        // No SearchAction: Google was crawling the literal template URL
+        // /products?q={search_term_string} and flagging it as a Soft 404.
       },
     ],
   };

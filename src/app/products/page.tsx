@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { permanentRedirect } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { listProducts, getFacets, getCategoryCounts } from '@/lib/catalog';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductBrowseToolbar } from '@/components/ProductBrowseToolbar';
@@ -26,6 +26,8 @@ type SearchParams = {
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const sp = await searchParams;
+  // Block schema.org SearchAction template URLs Google sometimes crawls literally.
+  if (sp.q && /[{}]/.test(sp.q)) notFound();
   if (sp.category?.trim()) {
     const qs = new URLSearchParams();
     if (sp.q) qs.set('q', sp.q);
