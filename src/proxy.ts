@@ -2,16 +2,27 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /** Per-request CSP with optional enforce mode (global/02 §7 — report-only → enforce). */
+const CANONICAL_HOST = 'www.canvasboards.lk';
+
 export function proxy(request: NextRequest) {
+  const hostname = request.nextUrl.hostname;
+  const isDev = process.env.NODE_ENV !== 'production';
+  const isLocalDev =
+    isDev && (hostname === 'localhost' || hostname === '127.0.0.1');
+
+  // One canonical host for SEO (GSC duplicate URL issues when apex and www both return 200).
+  if (!isLocalDev && hostname === 'canvasboards.lk') {
+    const dest = request.nextUrl.clone();
+    dest.hostname = CANONICAL_HOST;
+    dest.protocol = 'https:';
+    return NextResponse.redirect(dest, 301);
+  }
+
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const apiBase = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8080';
   const enforce = process.env.CSP_ENFORCE === 'true';
-  const isDev = process.env.NODE_ENV !== 'production';
   // 'unsafe-eval' is only needed for the local dev server (HMR/React refresh). Gate it on the actual
   // hostname so a staging box accidentally running with NODE_ENV!=production never ships it (P1-2).
-  const hostname = request.nextUrl.hostname;
-  const isLocalDev =
-    isDev && (hostname === 'localhost' || hostname === '127.0.0.1');
 
   const scriptSrc = isLocalDev
     ? `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'`

@@ -5,17 +5,33 @@ node_modules/
 .next/
 out/
 
-# Production build logs and env profiles
+# Production build logs and env profiles (.env.example is committed as a template)
 build/
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.env.example
+
+# Local deploy pack (standalone Next output — CI builds this on the runner)
+deploy-pack/
+frontend.tar.gz
+*.tar.gz
+
+# Google Cloud / GSC service account keys (if ever copied into this repo)
+ai-player-*.json
+*-service-account*.json
+gsc-credentials.json
+credentials.json
+client_secret*.json
 
 # Local deploy keys — never commit
 deploy/.keys/
+*.pem
+*.ppk
+
+# Local secret notes (passwords, PATs)
+scan lanka.txt
 
 # IDE and system files
 .idea/

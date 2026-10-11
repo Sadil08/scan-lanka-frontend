@@ -24,7 +24,7 @@ async function allProductSlugs(): Promise<string[]> {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: { path: string; changeFrequency: MetadataRoute.Sitemap[0]['changeFrequency']; priority: number }[] = [
-    { path: '', changeFrequency: 'weekly', priority: 1 },
+    { path: '/', changeFrequency: 'weekly', priority: 1 },
     { path: '/products', changeFrequency: 'daily', priority: 0.9 },
     { path: '/about', changeFrequency: 'monthly', priority: 0.7 },
     { path: '/contact', changeFrequency: 'monthly', priority: 0.7 },
