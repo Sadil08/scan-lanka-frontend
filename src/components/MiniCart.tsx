@@ -79,7 +79,10 @@ export function MiniCart() {
               {lines.map((line) => (
                 <li key={line.key} className="mini-cart-line">
                   <div className="mini-cart-line-main">
-                    <span className="mini-cart-line-name">{line.name}</span>
+                    <span className="mini-cart-line-name">
+                      {line.name}
+                      {line.selection ? ` — ${line.selection}` : ''}
+                    </span>
                     <span className="mini-cart-line-price">
                       {line.lineTotalCents != null ? formatLkr(line.lineTotalCents) : '—'}
                     </span>

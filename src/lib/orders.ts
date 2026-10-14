@@ -129,7 +129,7 @@ export function clearCardCheckoutAttempt() {
 
 /** Stable fingerprint of cart lines + contact/delivery fields used for PayHere retry dedupe. */
 export function cardCheckoutFingerprint(input: {
-  items: { productId: number; variantId?: number | null; quantity: number }[];
+  items: { productId: number; variantId?: number | null; quantity: number; optionIds?: number[] }[];
   contactName: string;
   contactPhone: string;
   contactEmail: string;
@@ -141,7 +141,7 @@ export function cardCheckoutFingerprint(input: {
   onlineTotalCents: number;
 }): string {
   const lines = [...input.items]
-    .map((i) => `${i.productId}:${i.variantId ?? ''}:${i.quantity}`)
+    .map((i) => `${i.productId}:${i.variantId ?? ''}:${i.quantity}:${[...(i.optionIds ?? [])].sort((a, b) => a - b).join('.')}`)
     .sort()
     .join('|');
   return [

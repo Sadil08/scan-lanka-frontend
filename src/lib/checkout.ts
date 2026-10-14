@@ -61,7 +61,12 @@ export interface Billing {
 }
 
 const toItems = (items: GuestCartItem[]) =>
-  items.map((i) => ({ productId: i.productId, variantId: i.variantId, quantity: i.quantity }));
+  items.map((i) => ({
+    productId: i.productId,
+    variantId: i.variantId,
+    quantity: i.quantity,
+    optionIds: i.optionIds,
+  }));
 
 export const fetchDeliveryOptions = (items: GuestCartItem[], postalCode: string, city?: string) =>
   api<DeliveryOptionsResult>('/api/checkout/delivery-options', {

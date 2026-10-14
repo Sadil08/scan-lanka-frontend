@@ -9,6 +9,8 @@ import {
   ServerCart,
   addServerCartItem,
   clearGuestCart,
+  optKey,
+  parseOptionIds,
   fetchServerCart,
   loadGuestCart,
   mergeServerCart,
@@ -37,8 +39,10 @@ interface CartState {
 
 const CartContext = createContext<CartState | undefined>(undefined);
 
-const sameLine = (a: GuestCartItem, productId: number, variantId: number | null) =>
-  a.productId === productId && (a.variantId ?? null) === (variantId ?? null);
+const sameLine = (a: GuestCartItem, productId: number, variantId: number | null, optionIds?: number[]) =>
+  a.productId === productId &&
+  (a.variantId ?? null) === (variantId ?? null) &&
+  optKey(a.optionIds) === optKey(optionIds);
 
 function useServerCart(user: ReturnType<typeof useAuth>['user']) {
   return user?.role === 'CUSTOMER' && user.emailVerified;
@@ -127,14 +131,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         quantity: l.quantity,
         lineTotalCents: l.lineTotalCents,
         status: l.status,
+        optionIds: parseOptionIds(l.optionIds),
+        selection: l.selection || undefined,
       }));
     }
     return guestItems.map((item) => {
       const line = priced?.lines.find(
-        (l) => l.productId === item.productId && (l.variantId ?? null) === (item.variantId ?? null),
+        (l) =>
+          l.productId === item.productId &&
+          (l.variantId ?? null) === (item.variantId ?? null) &&
+          optKey(parseOptionIds(l.optionIds)) === optKey(item.optionIds),
       );
       return {
-        key: `${item.productId}-${item.variantId ?? 's'}`,
+        key: `${item.productId}-${item.variantId ?? 's'}-${optKey(item.optionIds)}`,
+        optionIds: item.optionIds,
+        selection: line?.selection || undefined,
         productId: item.productId,
         variantId: item.variantId,
         name: line?.name ?? item.name,
@@ -150,16 +161,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const add = useCallback(
     async (item: GuestCartItem) => {
       if (serverMode) {
-        const cart = await addServerCartItem(item.productId, item.variantId, item.quantity);
+        const cart = await addServerCartItem(item.productId, item.variantId, item.quantity, item.optionIds);
         setServerCart(cart);
         setPriced(serverCartToPriced(cart));
         return;
       }
       setGuestItems((prev) => {
-        const existing = prev.find((i) => sameLine(i, item.productId, item.variantId));
+        const existing = prev.find((i) => sameLine(i, item.productId, item.variantId, item.optionIds));
         if (existing) {
           return prev.map((i) =>
-            sameLine(i, item.productId, item.variantId)
+            sameLine(i, item.productId, item.variantId, item.optionIds)
               ? { ...i, quantity: i.quantity + item.quantity }
               : i,
           );
@@ -181,7 +192,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       setGuestItems((prev) =>
         prev.map((i) =>
-          sameLine(i, line.productId, line.variantId) ? { ...i, quantity: qty } : i,
+          sameLine(i, line.productId, line.variantId, line.optionIds) ? { ...i, quantity: qty } : i,
         ),
       );
     },
@@ -196,7 +207,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setPriced(serverCartToPriced(cart));
         return;
       }
-      setGuestItems((prev) => prev.filter((i) => !sameLine(i, line.productId, line.variantId)));
+      setGuestItems((prev) => prev.filter((i) => !sameLine(i, line.productId, line.variantId, line.optionIds)));
     },
     [serverMode],
   );

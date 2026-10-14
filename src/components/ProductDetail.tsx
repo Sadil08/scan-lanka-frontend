@@ -45,6 +45,10 @@ export function ProductDetailView({
     [product.specGroups],
   );
   const allSelected = priceAffecting.every((g) => selected[g.id] != null);
+  // Optional (non-price) choices such as colour: sent with the cart line so they reach the order.
+  const optionalIds = product.specGroups
+    .filter((g) => !g.priceAffecting && selected[g.id] != null)
+    .map((g) => selected[g.id]);
 
   useEffect(() => {
     if (product.priceMode !== 'VARIANT' || !allSelected) {
@@ -186,7 +190,16 @@ export function ProductDetailView({
                     <button
                       key={o.id}
                       type="button"
-                      onClick={() => setSelected((s) => ({ ...s, [g.id]: o.id }))}
+                      onClick={() =>
+                        setSelected((s) => {
+                          // optional groups can be un-picked by clicking the active option again
+                          if (!g.priceAffecting && s[g.id] === o.id) {
+                            const { [g.id]: _drop, ...rest } = s;
+                            return rest;
+                          }
+                          return { ...s, [g.id]: o.id };
+                        })
+                      }
                       style={{ ...optBtn, ...(active ? optBtnActive : {}) }}
                     >
                       {o.value}
@@ -246,6 +259,7 @@ export function ProductDetailView({
                     variantId: product.priceMode === 'VARIANT' ? (resolved?.variantId ?? null) : null,
                     quantity: 1,
                     name: product.name,
+                    optionIds: optionalIds,
                   }).then(() => openDrawer());
                   setAdded(true);
                   setTimeout(() => setAdded(false), 2000);
@@ -266,6 +280,7 @@ export function ProductDetailView({
                       variantId: product.priceMode === 'VARIANT' ? (resolved?.variantId ?? null) : null,
                       quantity: 1,
                       name: product.name,
+                      optionIds: optionalIds,
                     }).then(() => router.push('/cart'));
                   }}
                 >

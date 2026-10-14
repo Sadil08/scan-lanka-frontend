@@ -57,6 +57,7 @@ export default function CartPage() {
         variantId: l.variantId,
         quantity: l.quantity,
         name: l.name,
+        optionIds: l.optionIds,
       })),
     [lines],
   );
@@ -574,6 +575,9 @@ export default function CartPage() {
           <li key={line.key} className="cart-line">
             <div className="cart-line-info">
               <div className="cart-line-name">{line.name}</div>
+              {line.selection && (
+                <div style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{line.selection}</div>
+              )}
               {line.status === 'CAPPED' && <div className="cart-line-warning">Limited to available stock</div>}
               {line.status === 'OUT_OF_STOCK' && <div className="cart-line-warning">Out of stock</div>}
               {line.status === 'UNAVAILABLE' && <div className="cart-line-warning">No longer available</div>}
